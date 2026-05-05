@@ -18,7 +18,7 @@
     }
 
     .container {
-      max-width: 900px;
+      max-width: 940px;
       margin: auto;
       background: white;
       padding: 28px;
@@ -150,6 +150,34 @@
       margin: 0;
     }
 
+    .weekday-row {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 8px;
+      margin-top: 14px;
+    }
+
+    .weekday-button {
+      padding: 10px 0;
+      border: 1px solid #bbb;
+      border-radius: 8px;
+      background: #eee;
+      color: #111;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .weekday-button:hover {
+      background: #ddd;
+    }
+
+    .weekday-button.selected {
+      background: #111;
+      color: #fff;
+      border-color: #111;
+    }
+
     .month-block {
       margin-top: 20px;
       padding: 18px;
@@ -168,21 +196,33 @@
       flex: 1;
     }
 
-    .days-grid {
+    .calendar-grid {
       display: grid;
       grid-template-columns: repeat(7, 1fr);
       gap: 8px;
-      margin-top: 14px;
+      margin-top: 8px;
+    }
+
+    .weekday-label {
+      padding: 8px 0;
+      text-align: center;
+      color: #666;
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .day-button,
+    .blank-day {
+      min-height: 42px;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 700;
     }
 
     .day-button {
-      padding: 10px 0;
       border: 1px solid #ccc;
-      border-radius: 8px;
       background: white;
       color: #111;
-      font-size: 14px;
-      font-weight: 700;
       cursor: pointer;
     }
 
@@ -190,6 +230,11 @@
       background: #111;
       color: white;
       border-color: #111;
+    }
+
+    .blank-day {
+      border: 1px dashed #e0e0e0;
+      background: #f7f7f7;
     }
 
     .small-button {
@@ -253,8 +298,14 @@
         align-items: stretch;
       }
 
-      .days-grid {
-        grid-template-columns: repeat(4, 1fr);
+      .calendar-grid,
+      .weekday-row {
+        gap: 5px;
+      }
+
+      .day-button,
+      .blank-day {
+        min-height: 36px;
       }
     }
   </style>
@@ -355,11 +406,15 @@
   <script>
     let currentMode = "paste";
     let monthBlockId = 0;
+    let extraSelectedDates = new Set();
+    let weekdaySelections = {};
 
     const monthNames = [
       "一月", "二月", "三月", "四月", "五月", "六月",
       "七月", "八月", "九月", "十月", "十一月", "十二月"
     ];
+
+    const weekdayNames = ["周日", "周一", "周二", "周三", "周四", "周五", "周六"];
 
     const monthMap = {
       jan: 1, january: 1,
@@ -507,11 +562,27 @@
     }
 
     function createMonthOptions(selectedMonth) {
-      return monthNames.map((name, index) => {
+      let options = `<option value="any" ${selectedMonth === "any" ? "selected" : ""}>Any</option>`;
+      options += monthNames.map((name, index) => {
         const value = index + 1;
         const selected = value === selectedMonth ? "selected" : "";
         return `<option value="${value}" ${selected}>${name}</option>`;
       }).join("");
+      return options;
+    }
+
+    function getBlockKey(id) {
+      const year = document.getElementById(`year-${id}`).value;
+      const month = document.getElementById(`month-${id}`).value;
+      return `${id}-${year}-${month}`;
+    }
+
+    function getWeekdaySetForBlock(id) {
+      const key = getBlockKey(id);
+      if (!weekdaySelections[key]) {
+        weekdaySelections[key] = new Set();
+      }
+      return weekdaySelections[key];
     }
 
     function addMonthBlock(defaultYear = 2026, defaultMonth = 5) {
@@ -526,21 +597,30 @@
         <div class="month-header">
           <div>
             <label for="year-${id}">年份</label>
-            <input id="year-${id}" type="number" value="${defaultYear}" onchange="renderDays(${id})" />
+            <input id="year-${id}" type="number" value="${defaultYear}" onchange="renderCalendar(${id})" />
           </div>
           <div>
             <label for="month-${id}">月份</label>
-            <select id="month-${id}" onchange="renderDays(${id})">
+            <select id="month-${id}" onchange="renderCalendar(${id})">
               ${createMonthOptions(defaultMonth)}
             </select>
           </div>
           <button type="button" class="small-button remove-button" onclick="removeMonthBlock(${id})">删除</button>
         </div>
-        <div class="days-grid" id="days-${id}"></div>
+        <div class="weekday-row" id="weekday-row-${id}">
+          <button type="button" class="weekday-button" data-weekday-button="0" onclick="toggleWeekdayForBlock(${id}, 0)">周日</button>
+          <button type="button" class="weekday-button" data-weekday-button="1" onclick="toggleWeekdayForBlock(${id}, 1)">周一</button>
+          <button type="button" class="weekday-button" data-weekday-button="2" onclick="toggleWeekdayForBlock(${id}, 2)">周二</button>
+          <button type="button" class="weekday-button" data-weekday-button="3" onclick="toggleWeekdayForBlock(${id}, 3)">周三</button>
+          <button type="button" class="weekday-button" data-weekday-button="4" onclick="toggleWeekdayForBlock(${id}, 4)">周四</button>
+          <button type="button" class="weekday-button" data-weekday-button="5" onclick="toggleWeekdayForBlock(${id}, 5)">周五</button>
+          <button type="button" class="weekday-button" data-weekday-button="6" onclick="toggleWeekdayForBlock(${id}, 6)">周六</button>
+        </div>
+        <div class="calendar-grid" id="calendar-${id}"></div>
       `;
 
       container.appendChild(block);
-      renderDays(id);
+      renderCalendar(id);
     }
 
     function removeMonthBlock(id) {
@@ -550,31 +630,128 @@
       }
     }
 
-    function renderDays(id) {
-      const year = Number(document.getElementById(`year-${id}`).value);
-      const month = Number(document.getElementById(`month-${id}`).value);
-      const grid = document.getElementById(`days-${id}`);
+    function getDatesForWeekdayInMonth(year, month, weekday) {
+      const dates = [];
       const totalDays = daysInMonth(year, month);
+      for (let day = 1; day <= totalDays; day++) {
+        const date = new Date(year, month - 1, day);
+        if (date.getDay() === weekday) {
+          dates.push(`${year}-${pad(month)}-${pad(day)}`);
+        }
+      }
+      return dates;
+    }
+
+    function getDatesForWeekdayInYear(year, weekday) {
+      const dates = [];
+      for (let month = 1; month <= 12; month++) {
+        dates.push(...getDatesForWeekdayInMonth(year, month, weekday));
+      }
+      return dates;
+    }
+
+    function addDatesForWeekday(id, weekday) {
+      const year = Number(document.getElementById(`year-${id}`).value);
+      const monthValue = document.getElementById(`month-${id}`).value;
+      const dates = monthValue === "any"
+        ? getDatesForWeekdayInYear(year, weekday)
+        : getDatesForWeekdayInMonth(year, Number(monthValue), weekday);
+
+      dates.forEach(date => extraSelectedDates.add(date));
+    }
+
+    function removeDatesForWeekday(id, weekday) {
+      const year = Number(document.getElementById(`year-${id}`).value);
+      const monthValue = document.getElementById(`month-${id}`).value;
+      const dates = monthValue === "any"
+        ? getDatesForWeekdayInYear(year, weekday)
+        : getDatesForWeekdayInMonth(year, Number(monthValue), weekday);
+
+      dates.forEach(date => extraSelectedDates.delete(date));
+    }
+
+    function toggleWeekdayForBlock(id, weekday) {
+      const selectedWeekdays = getWeekdaySetForBlock(id);
+
+      if (selectedWeekdays.has(weekday)) {
+        selectedWeekdays.delete(weekday);
+        removeDatesForWeekday(id, weekday);
+      } else {
+        selectedWeekdays.add(weekday);
+        addDatesForWeekday(id, weekday);
+      }
+
+      renderCalendar(id);
+    }
+
+    function renderWeekdayButtons(id) {
+      const selectedWeekdays = getWeekdaySetForBlock(id);
+      document.querySelectorAll(`#weekday-row-${id} .weekday-button`).forEach(button => {
+        const weekday = Number(button.dataset.weekdayButton);
+        button.classList.toggle("selected", selectedWeekdays.has(weekday));
+      });
+    }
+
+    function renderCalendar(id) {
+      const year = Number(document.getElementById(`year-${id}`).value);
+      const monthValue = document.getElementById(`month-${id}`).value;
+      const grid = document.getElementById(`calendar-${id}`);
 
       grid.innerHTML = "";
+      renderWeekdayButtons(id);
+
+      if (monthValue === "any") {
+        return;
+      }
+
+      const month = Number(monthValue);
+      const totalDays = daysInMonth(year, month);
+      const firstWeekday = new Date(year, month - 1, 1).getDay();
+
+      weekdayNames.forEach(name => {
+        const label = document.createElement("div");
+        label.className = "weekday-label";
+        label.textContent = name;
+        grid.appendChild(label);
+      });
+
+      for (let i = 0; i < firstWeekday; i++) {
+        const blank = document.createElement("div");
+        blank.className = "blank-day";
+        grid.appendChild(blank);
+      }
 
       for (let day = 1; day <= totalDays; day++) {
+        const dateStr = `${year}-${pad(month)}-${pad(day)}`;
         const button = document.createElement("button");
         button.type = "button";
         button.className = "day-button";
         button.textContent = day;
-        button.dataset.date = `${year}-${pad(month)}-${pad(day)}`;
+        button.dataset.date = dateStr;
+        button.dataset.weekday = String(new Date(year, month - 1, day).getDay());
+
+        if (extraSelectedDates.has(dateStr)) {
+          button.classList.add("selected");
+        }
+
         button.onclick = function () {
           button.classList.toggle("selected");
+          if (button.classList.contains("selected")) {
+            extraSelectedDates.add(dateStr);
+          } else {
+            extraSelectedDates.delete(dateStr);
+          }
         };
+
         grid.appendChild(button);
       }
     }
 
     function getSelectedDates() {
-      return Array.from(document.querySelectorAll(".day-button.selected"))
-        .map(button => button.dataset.date)
-        .sort();
+      document.querySelectorAll(".day-button.selected").forEach(button => {
+        extraSelectedDates.add(button.dataset.date);
+      });
+      return Array.from(extraSelectedDates).sort();
     }
 
     function getDatesByCurrentMode() {
