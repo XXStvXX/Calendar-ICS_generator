@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>ICS Calendar Generator</title>
+  <title>UTSC Course Calendar ICS Generator</title>
   <style>
     * {
       box-sizing: border-box;
@@ -19,6 +20,7 @@
 
     .container {
       max-width: 940px;
+      max-width: 1040px;
       margin: auto;
       background: #fff;
       padding: 28px;
@@ -30,6 +32,13 @@
       margin: 0 0 10px;
       font-size: 28px;
       font-weight: 700;
+      font-size: 30px;
+      font-weight: 800;
+    }
+
+    h2 {
+      margin: 0 0 14px;
+      font-size: 22px;
     }
 
     .hint {
@@ -39,9 +48,47 @@
       margin: 0 0 22px;
     }
 
+    .academic-card,
+    .form-section,
+    .calendar-status {
+      margin-top: 22px;
+      padding: 18px;
+      border: 1px solid #ddd;
+      border-radius: 14px;
+      background: #fafafa;
+    }
+
+    .academic-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+      margin-top: 12px;
+    }
+
+    .academic-item {
+      padding: 12px;
+      border: 1px solid #e1e1e1;
+      border-radius: 10px;
+      background: #fff;
+      line-height: 1.45;
+    }
+
+    .academic-code {
+      display: inline-block;
+      margin-right: 6px;
+      padding: 2px 7px;
+      border-radius: 999px;
+      background: #111;
+      color: #fff;
+      font-size: 12px;
+      font-weight: 800;
+      text-transform: uppercase;
+    }
+
     label {
       display: block;
       margin-top: 18px;
+      margin-top: 16px;
       font-size: 15px;
       font-weight: 700;
     }
@@ -60,14 +107,21 @@
 
     textarea {
       min-height: 130px;
+      min-height: 110px;
       resize: vertical;
       line-height: 1.5;
     }
 
     .row {
+    .row,
+    .three-col {
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 16px;
+    }
+
+    .row {
+      grid-template-columns: 1fr 1fr;
     }
 
     .three-col {
@@ -78,21 +132,37 @@
     }
 
     .checkbox-row {
+    .checkbox-row,
+    .weekday-picker {
       display: flex;
+      flex-wrap: wrap;
       align-items: center;
       gap: 10px;
       margin-top: 18px;
+      margin-top: 12px;
     }
 
     .checkbox-row input {
+    .checkbox-row input,
+    .weekday-picker input {
       width: auto;
       margin: 0;
     }
 
     .checkbox-row label {
+    .checkbox-row label,
+    .weekday-picker label {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
       margin: 0;
       font-size: 15px;
       font-weight: 700;
+      padding: 9px 11px;
+      border: 1px solid #ddd;
+      border-radius: 999px;
+      background: #fff;
+      font-size: 14px;
       cursor: pointer;
     }
 
@@ -101,6 +171,7 @@
       grid-template-columns: 1fr 1fr;
       gap: 10px;
       margin-top: 22px;
+      margin-top: 14px;
     }
 
     .mode-button {
@@ -123,6 +194,7 @@
     .mode-panel {
       display: none;
       margin-top: 18px;
+      margin-top: 14px;
     }
 
     .mode-panel.active {
@@ -169,10 +241,14 @@
     }
 
     .calendar-grid {
+    .button-row {
       display: grid;
       grid-template-columns: repeat(7, 1fr);
       gap: 8px;
       margin-top: 14px;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-top: 24px;
     }
 
     .weekday-button,
@@ -182,12 +258,21 @@
       border-radius: 8px;
       font-size: 14px;
       font-weight: 700;
+    button {
+      font-family: inherit;
     }
 
     .weekday-button {
       border: 1px solid #bbb;
       background: #eee;
       color: #111;
+    .main-button,
+    .secondary-button {
+      width: 100%;
+      padding: 14px;
+      border-radius: 10px;
+      font-size: 16px;
+      font-weight: 800;
       cursor: pointer;
     }
 
@@ -196,6 +281,8 @@
     }
 
     .weekday-button.active {
+    .main-button {
+      border: none;
       background: #111;
       color: #fff;
       border-color: #111;
@@ -206,23 +293,34 @@
       background: #fff;
       color: #111;
       cursor: pointer;
+    .main-button:hover {
+      background: #333;
     }
 
     .day-button.selected {
       background: #111;
       color: #fff;
       border-color: #111;
+    .secondary-button {
+      border: 1px solid #111;
+      background: #fff;
+      color: #111;
     }
 
     .blank-day {
       border: 1px dashed #e0e0e0;
       background: #f7f7f7;
+    .secondary-button:hover {
+      background: #f1f1f1;
     }
 
     .small-button {
+    .danger-button {
+      margin-top: 10px;
       width: auto;
       padding: 11px 14px;
       margin-top: 8px;
+      padding: 10px 12px;
       border: none;
       border-radius: 8px;
       background: #eee;
@@ -245,6 +343,7 @@
       background: #111;
       color: #fff;
       font-size: 16px;
+      color: #333;
       font-weight: 700;
       cursor: pointer;
     }
@@ -256,22 +355,34 @@
     .remove-button {
       background: #f1f1f1;
       color: #333;
+    .calendar-status ul {
+      padding-left: 20px;
+      margin: 10px 0 0;
+      line-height: 1.6;
     }
 
     .section-title {
       margin-top: 26px;
       font-size: 18px;
       font-weight: 700;
+    .empty-state {
+      color: #666;
+      margin: 8px 0 0;
     }
 
     @media (max-width: 700px) {
+    @media (max-width: 760px) {
       body {
         padding: 20px;
+        padding: 18px;
       }
 
+      .academic-grid,
       .row,
       .three-col,
       .mode-tabs {
+      .mode-tabs,
+      .button-row {
         grid-template-columns: 1fr;
       }
 
@@ -296,29 +407,102 @@
 <body>
   <div class="container">
     <h1>Calendar ICS Generator</h1>
+    <h1>UTSC Course Calendar ICS Generator</h1>
     <p class="hint">
       选择一种日期输入模式：粘贴日期文本，或者按月份手动多选日期。两个模式互斥，生成时只会读取当前模式。
+      先建立一个课程日历，再把 Project / Assignment / Exam 等不同项目逐个添加进去。最后下载的 ICS 只包含同一个课程代码的事件。
     </p>
 
     <label for="projectName">项目名称</label>
     <input id="projectName" placeholder="例如：LINB06" value="LINB06" />
+    <section class="academic-card" aria-labelledby="academicDatesTitle">
+      <h2 id="academicDatesTitle">Academic Date · Summer 2026</h2>
+      <p class="hint">以下日期来自你提供的 UTSC Summer 2026 academic dates，缩写会在后续表单中使用。</p>
+      <div class="academic-grid" id="academicDatesGrid"></div>
+    </section>
+
+    <section class="form-section" aria-labelledby="courseInfoTitle">
+      <h2 id="courseInfoTitle">1. 信息准备</h2>
+      <div class="row">
+        <div>
+          <label for="courseName">课程名称</label>
+          <input id="courseName" placeholder="例如：Research Seminar" />
+        </div>
+        <div>
+          <label for="courseCode">课程代码</label>
+          <input id="courseCode" placeholder="例如：ECTD66" />
+        </div>
+      </div>
+
+      <label for="courseSession">课程学期</label>
+      <select id="courseSession" onchange="syncSessionHelp()">
+        <option value="fss">first sub-session (fss)</option>
+        <option value="sss">second sub-session (sss)</option>
+        <option value="fs" selected>full session (fs)</option>
+      </select>
+      <p class="hint" id="sessionHelp"></p>
+
+      <div class="row">
+        <div>
+          <label for="assessmentName">项目名称</label>
+          <input id="assessmentName" placeholder="例如：project 1 / Sessions 3–10 Assignments" />
+        </div>
+        <div>
+          <label for="weight">分数占比</label>
+          <input id="weight" placeholder="例如：5% / Each assignment = 2.5%" />
+        </div>
+      </div>
 
     <label for="note">备注</label>
     <input id="note" placeholder="例如：Problem Set" value="Problem Set" />
+      <label for="note">备注</label>
+      <textarea id="note" placeholder="可以写任何希望放进日历备注里的内容，例如 Details provided in Quercus."></textarea>
 
     <div class="checkbox-row">
       <input id="allDay" type="checkbox" onchange="toggleTimeInputs()" />
       <label for="allDay">全天事件</label>
     </div>
+      <div class="row">
+        <div>
+          <label for="location">教室号 / 地点</label>
+          <input id="location" placeholder="例如：KW170 / Online" />
+        </div>
+        <div>
+          <label for="link">链接</label>
+          <input id="link" type="url" placeholder="例如：https://q.utoronto.ca/..." />
+        </div>
+      </div>
+    </section>
 
     <div class="row" id="timeRow">
       <div>
         <label for="startTime">开始时间</label>
         <input id="startTime" type="time" value="09:00" />
+    <section class="form-section" aria-labelledby="eventInfoTitle">
+      <h2 id="eventInfoTitle">2. 日历信息输入</h2>
+      <div class="checkbox-row">
+        <input id="allDay" type="checkbox" onchange="toggleTimeInputs()" />
+        <label for="allDay">全天事件</label>
       </div>
       <div>
         <label for="endTime">结束时间</label>
         <input id="endTime" type="time" value="10:00" />
+
+      <div class="row" id="timeRow">
+        <div>
+          <label for="startTime">开始时间</label>
+          <input id="startTime" type="time" value="09:00" />
+        </div>
+        <div>
+          <label for="endTime">结束时间</label>
+          <input id="endTime" type="time" value="10:00" />
+        </div>
+      </div>
+
+      <label>事件日期</label>
+      <div class="mode-tabs">
+        <button type="button" id="pasteModeButton" class="mode-button active" onclick="setMode('paste')">粘贴日期</button>
+        <button type="button" id="recurringModeButton" class="mode-button" onclick="setMode('recurring')">按学期内星期几重复</button>
       </div>
     </div>
 
@@ -336,6 +520,10 @@
         <div class="format-title">粘贴日期顺序</div>
         <p class="format-note">
           请选择你粘贴日期的真实顺序。支持数字月份，也支持英文月份，例如 March、Mar、April、Apr。分隔符可以是 - / _ . 空格 或逗号。
+
+      <div id="pastePanel" class="mode-panel active">
+        <p class="hint">
+          支持 2026-05-14、2026/05/14、20260514、May 14 2026、14 May 2026。日期可以换行、逗号分隔，也可以整串黏贴如 2026-05-142026-05-21。
         </p>
         <div class="three-col">
           <div>
@@ -363,6 +551,13 @@
             </select>
           </div>
         </div>
+        <label for="datesText">日期粘贴框</label>
+        <textarea id="datesText" placeholder="例如：2026-05-14, 2026-05-21, 2026-05-28"></textarea>
+      </div>
+
+      <div id="recurringPanel" class="mode-panel">
+        <p class="hint" id="recurringHelp"></p>
+        <div class="weekday-picker" id="weekdayPicker"></div>
       </div>
 
       <label for="datesText">日期列表</label>
@@ -384,6 +579,17 @@
     </div>
 
     <button class="main-button" onclick="generateICS()">生成并下载 ICS 文件</button>
+      <div class="button-row">
+        <button type="button" class="secondary-button" onclick="addCurrentAssessment()">添加到课程日历</button>
+        <button type="button" class="main-button" onclick="downloadCourseCalendar()">完成课程日历并下载 ICS</button>
+      </div>
+    </section>
+
+    <section class="calendar-status" aria-labelledby="calendarStatusTitle">
+      <h2 id="calendarStatusTitle">当前课程日历</h2>
+      <div id="calendarSummary" class="empty-state">还没有添加任何项目。</div>
+      <button type="button" class="danger-button" onclick="clearCourseCalendar()">清空当前课程日历</button>
+    </section>
   </div>
 
   <script>
@@ -393,10 +599,27 @@
     const selectedDates = new Set();
     const manualDates = new Set();
     const weekdayRules = new Map();
+    const academicDates = {
+      fss: { code: "fss", label: "First sub-session", start: "2026-05-04", end: "2026-06-16" },
+      sss: { code: "sss", label: "Second sub-session", start: "2026-06-22", end: "2026-08-06" },
+      fs: { code: "fs", label: "Full session", start: "2026-05-04", end: "2026-08-06" },
+      rw: { code: "rw", label: "Reading week", start: "2026-06-17", end: "2026-06-20" },
+      fss_fp: { code: "fss_fp", label: "FSS final period", start: "2026-06-17", end: "2026-06-20" },
+      sss_fp: { code: "sss_fp", label: "SSS final period", start: "2026-08-10", end: "2026-08-22" },
+      fs_fp: { code: "fs_fp", label: "FS final period", start: "2026-08-10", end: "2026-08-22" }
+    };
 
     const monthNames = [
       "一月", "二月", "三月", "四月", "五月", "六月",
       "七月", "八月", "九月", "十月", "十一月", "十二月"
+    const weekdayNames = [
+      { value: 0, label: "周日" },
+      { value: 1, label: "周一" },
+      { value: 2, label: "周二" },
+      { value: 3, label: "周三" },
+      { value: 4, label: "周四" },
+      { value: 5, label: "周五" },
+      { value: 6, label: "周六" }
     ];
 
     const weekdayNames = ["周日", "周一", "周二", "周三", "周四", "周五", "周六"];
@@ -416,12 +639,29 @@
       dec: 12, december: 12
     };
 
+    let currentMode = "paste";
+    let courseCalendar = {
+      courseCode: "",
+      courseName: "",
+      session: "",
+      events: []
+    };
+
     function pad(num) {
       return String(num).padStart(2, "0");
     }
 
     function makeDate(year, month, day) {
       return `${year}-${pad(month)}-${pad(day)}`;
+    }
+
+    function formatReadableDate(dateStr) {
+      const date = new Date(dateStr + "T00:00:00");
+      return date.toLocaleDateString("en-CA", { month: "short", day: "numeric", year: "numeric" });
+    }
+
+    function formatDateRange(start, end) {
+      return `${formatReadableDate(start)} – ${formatReadableDate(end)}`;
     }
 
     function daysInMonth(year, month) {
@@ -441,11 +681,17 @@
     }
 
     function formatDate(dateStr) {
+    function isWithinRange(dateStr, start, end) {
+      return dateStr >= start && dateStr <= end;
+    }
+
+    function formatICSDate(dateStr) {
       const [year, month, day] = dateStr.split("-").map(Number);
       return `${year}${pad(month)}${pad(day)}`;
     }
 
     function formatDateTime(dateStr, timeStr) {
+    function formatICSDateTime(dateStr, timeStr) {
       const [year, month, day] = dateStr.split("-").map(Number);
       const [hour, minute] = timeStr.split(":").map(Number);
       return `${year}${pad(month)}${pad(day)}T${pad(hour)}${pad(minute)}00`;
@@ -459,6 +705,7 @@
 
     function escapeICS(text) {
       return text
+      return String(text || "")
         .replace(/\\/g, "\\\\")
         .replace(/,/g, "\\,")
         .replace(/;/g, "\\;")
@@ -467,6 +714,35 @@
 
     function generateUID() {
       return Math.random().toString(36).substring(2) + "@ics-generator";
+      return `${Date.now()}-${Math.random().toString(36).slice(2)}@utsc-course-ics-generator`;
+    }
+
+    function renderAcademicDates() {
+      const grid = document.getElementById("academicDatesGrid");
+      grid.innerHTML = Object.values(academicDates).map(item => `
+        <div class="academic-item">
+          <span class="academic-code">${item.code}</span>
+          <strong>${item.label}</strong><br />
+          ${formatDateRange(item.start, item.end)}
+        </div>
+      `).join("");
+    }
+
+    function renderWeekdayPicker() {
+      const picker = document.getElementById("weekdayPicker");
+      picker.innerHTML = weekdayNames.map(day => `
+        <label>
+          <input type="checkbox" name="weekday" value="${day.value}" />
+          ${day.label}
+        </label>
+      `).join("");
+    }
+
+    function syncSessionHelp() {
+      const sessionKey = document.getElementById("courseSession").value;
+      const session = academicDates[sessionKey];
+      document.getElementById("sessionHelp").textContent = `${session.label}: ${formatDateRange(session.start, session.end)}`;
+      document.getElementById("recurringHelp").textContent = `重复日期会自动限定在 ${session.code} (${formatDateRange(session.start, session.end)}) 内；不会应用到 reading week 或 final period。`;
     }
 
     function toggleTimeInputs() {
@@ -479,6 +755,7 @@
 
       document.getElementById("pasteModeButton").classList.toggle("active", mode === "paste");
       document.getElementById("selectModeButton").classList.toggle("active", mode === "select");
+      document.getElementById("recurringModeButton").classList.toggle("active", mode === "recurring");
       document.getElementById("pastePanel").classList.toggle("active", mode === "paste");
       document.getElementById("selectPanel").classList.toggle("active", mode === "select");
     }
@@ -489,23 +766,35 @@
         document.getElementById("part2").value,
         document.getElementById("part3").value
       ];
+      document.getElementById("recurringPanel").classList.toggle("active", mode === "recurring");
     }
 
     function validateDateOrder() {
       const order = getDateOrder();
       const unique = new Set(order);
       return unique.size === 3 && unique.has("year") && unique.has("month") && unique.has("day");
+    function pushDateIfValid(matches, year, month, day) {
+      if (isValidDateParts(year, month, day)) {
+        matches.push(makeDate(year, month, day));
+      }
     }
 
     function parseDateToken(token, type) {
       const cleaned = token.trim().toLowerCase();
+    function parsePastedDates(rawText) {
+      const matches = [];
+      const text = rawText.replace(/[，、]/g, ",");
 
       if (type === "month" && monthMap[cleaned]) {
         return monthMap[cleaned];
+      for (const match of text.matchAll(/(20\d{2}|19\d{2})(\d{2})(\d{2})(?=(?:19|20)\d{2}|\D|$)/g)) {
+        pushDateIfValid(matches, Number(match[1]), Number(match[2]), Number(match[3]));
       }
 
       if (/^\d+$/.test(cleaned)) {
         return Number(cleaned);
+      for (const match of text.matchAll(/(20\d{2}|19\d{2})\s*[-\/. _]\s*(\d{1,2})\s*[-\/. _]\s*(\d{1,2})(?=(?:19|20)\d{2}|\D|$)/g)) {
+        pushDateIfValid(matches, Number(match[1]), Number(match[2]), Number(match[3]));
       }
 
       return null;
@@ -532,13 +821,20 @@
       for (let i = 0; i < 3; i++) {
         const type = order[i];
         parsed[type] = parseDateToken(parts[i], type);
+      for (const match of text.matchAll(/\b([A-Za-z]{3,9})\s+(\d{1,2})(?:st|nd|rd|th)?[,]?\s+(20\d{2}|19\d{2})\b/g)) {
+        const month = monthMap[match[1].toLowerCase()];
+        pushDateIfValid(matches, Number(match[3]), month, Number(match[2]));
       }
 
       if (!isValidDateParts(parsed.year, parsed.month, parsed.day)) {
         return null;
+      for (const match of text.matchAll(/\b(\d{1,2})(?:st|nd|rd|th)?\s+([A-Za-z]{3,9})[,]?\s+(20\d{2}|19\d{2})\b/g)) {
+        const month = monthMap[match[2].toLowerCase()];
+        pushDateIfValid(matches, Number(match[3]), month, Number(match[1]));
       }
 
       return makeDate(parsed.year, parsed.month, parsed.day);
+      return [...new Set(matches)].sort();
     }
 
     function cleanDates(rawText) {
@@ -568,6 +864,10 @@
     }
 
     function getDatesForWeekday(year, monthValue, weekday) {
+    function getRecurringDates() {
+      const sessionKey = document.getElementById("courseSession").value;
+      const session = academicDates[sessionKey];
+      const selectedWeekdays = Array.from(document.querySelectorAll('input[name="weekday"]:checked')).map(input => Number(input.value));
       const dates = [];
       const months = monthValue === "any"
         ? Array.from({ length: 12 }, (_, index) => index + 1)
@@ -579,8 +879,18 @@
           if (date.getDay() === weekday) {
             dates.push(makeDate(year, month, day));
           }
+      const cursor = new Date(session.start + "T00:00:00");
+      const end = new Date(session.end + "T00:00:00");
+
+      while (cursor <= end) {
+        const dateStr = makeDate(cursor.getFullYear(), cursor.getMonth() + 1, cursor.getDate());
+        const inReadingWeek = isWithinRange(dateStr, academicDates.rw.start, academicDates.rw.end);
+        if (selectedWeekdays.includes(cursor.getDay()) && !inReadingWeek) {
+          dates.push(dateStr);
         }
       });
+        cursor.setDate(cursor.getDate() + 1);
+      }
 
       return dates;
     }
@@ -621,6 +931,9 @@
         weekdayRules.delete(inheritedAnyKey);
       } else {
         weekdayRules.set(directKey, { year, monthValue, weekday });
+    function getDatesByCurrentMode() {
+      if (currentMode === "paste") {
+        return parsePastedDates(document.getElementById("datesText").value);
       }
 
       recomputeSelectedDates();
@@ -635,6 +948,39 @@
         manualDates.delete(dateStr);
       } else {
         manualDates.add(dateStr);
+      return getRecurringDates();
+    }
+
+    function buildDescription(note, weight, location, link) {
+      const lines = [];
+      if (weight) lines.push(`Grade weight: ${weight}`);
+      if (note) lines.push(note);
+      if (location) lines.push(`Room / location: ${location}`);
+      if (link) lines.push(`Link: ${link}`);
+      return lines.join("\n");
+    }
+
+    function getCurrentFormData() {
+      return {
+        courseName: document.getElementById("courseName").value.trim(),
+        courseCode: document.getElementById("courseCode").value.trim().toUpperCase(),
+        session: document.getElementById("courseSession").value,
+        assessmentName: document.getElementById("assessmentName").value.trim(),
+        weight: document.getElementById("weight").value.trim(),
+        note: document.getElementById("note").value.trim(),
+        location: document.getElementById("location").value.trim(),
+        link: document.getElementById("link").value.trim(),
+        startTime: document.getElementById("startTime").value,
+        endTime: document.getElementById("endTime").value,
+        allDay: document.getElementById("allDay").checked,
+        dates: getDatesByCurrentMode()
+      };
+    }
+
+    function validateAssessment(data) {
+      if (!data.courseCode || !data.courseName) {
+        alert("请填写课程名称和课程代码。");
+        return false;
       }
 
       recomputeSelectedDates();
@@ -675,6 +1021,9 @@
       const block = document.querySelector(`[data-block-id="${id}"]`);
       if (block) {
         block.remove();
+      if (!data.assessmentName) {
+        alert("请填写项目名称。");
+        return false;
       }
     }
 
@@ -699,6 +1048,9 @@
 
       if (monthValue === "any") {
         return;
+      if (!data.weight) {
+        alert("请填写分数占比，例如 5%。");
+        return false;
       }
 
       const month = Number(monthValue);
@@ -709,6 +1061,9 @@
         const blank = document.createElement("div");
         blank.className = "blank-day";
         grid.appendChild(blank);
+      if (!data.allDay && (!data.startTime || !data.endTime)) {
+        alert("请填写开始时间和结束时间，或勾选全天事件。");
+        return false;
       }
 
       for (let day = 1; day <= totalDays; day++) {
@@ -722,6 +1077,9 @@
           toggleSingleDate(dateStr);
         };
         grid.appendChild(button);
+      if (data.dates.length === 0) {
+        alert(currentMode === "paste" ? "没有识别到有效日期，请检查粘贴内容。" : "请选择至少一个星期几。");
+        return false;
       }
     }
 
@@ -739,13 +1097,50 @@
     function getDatesByCurrentMode() {
       if (currentMode === "paste") {
         return cleanDates(document.getElementById("datesText").value);
+      if (courseCalendar.courseCode && courseCalendar.courseCode !== data.courseCode) {
+        alert(`当前课程日历是 ${courseCalendar.courseCode}，不能混合加入 ${data.courseCode}。请先下载或清空当前课程日历。`);
+        return false;
       }
 
       if (currentMode === "select") {
         return getSelectedDates();
       }
+      return true;
+    }
+
+    function addCurrentAssessment() {
+      const data = getCurrentFormData();
+      if (!validateAssessment(data)) return;
+
+      courseCalendar.courseCode = data.courseCode;
+      courseCalendar.courseName = data.courseName;
+      courseCalendar.session = data.session;
+
+      data.dates.forEach(date => {
+        courseCalendar.events.push({
+          date,
+          courseCode: data.courseCode,
+          courseName: data.courseName,
+          session: data.session,
+          assessmentName: data.assessmentName,
+          weight: data.weight,
+          note: data.note,
+          location: data.location,
+          link: data.link,
+          allDay: data.allDay,
+          startTime: data.startTime,
+          endTime: data.endTime,
+          description: buildDescription(data.note, data.weight, data.location, data.link)
+        });
+      });
 
       return [];
+      renderCalendarSummary();
+      document.getElementById("assessmentName").value = "";
+      document.getElementById("weight").value = "";
+      document.getElementById("note").value = "";
+      document.getElementById("link").value = "";
+      alert(`已添加 ${data.dates.length} 个事件到 ${data.courseCode} 课程日历。`);
     }
 
     function generateICS() {
@@ -755,9 +1150,14 @@
       const endTime = document.getElementById("endTime").value;
       const location = document.getElementById("location").value.trim();
       const allDay = document.getElementById("allDay").checked;
+    function renderCalendarSummary() {
+      const summary = document.getElementById("calendarSummary");
 
       if (currentMode === "paste" && !validateDateOrder()) {
         alert("日期顺序必须刚好包含 Year、Month、Day，不能重复。");
+      if (courseCalendar.events.length === 0) {
+        summary.className = "empty-state";
+        summary.textContent = "还没有添加任何项目。";
         return;
       }
 
@@ -772,18 +1172,58 @@
         alert("当前模式下没有有效日期。请检查日期顺序和日期内容。");
         return;
       }
+      const grouped = courseCalendar.events.reduce((acc, event) => {
+        const key = `${event.assessmentName} (${event.weight})`;
+        acc[key] = acc[key] || [];
+        acc[key].push(event.date);
+        return acc;
+      }, {});
+
+      summary.className = "";
+      summary.innerHTML = `
+        <strong>${courseCalendar.courseCode} · ${courseCalendar.courseName}</strong>
+        <p class="hint">共 ${courseCalendar.events.length} 个事件。继续添加下一个项目，或点击完成下载整个课程日历。</p>
+        <ul>
+          ${Object.entries(grouped).map(([name, dates]) => `<li>${name}: ${dates.sort().join(", ")}</li>`).join("")}
+        </ul>
+      `;
+    }
 
       if (!allDay && (!startTime || !endTime)) {
         alert("请填写开始时间和结束时间，或勾选全天事件。");
         return;
       }
+    function clearCourseCalendar() {
+      courseCalendar = { courseCode: "", courseName: "", session: "", events: [] };
+      renderCalendarSummary();
+    }
 
+    function buildICS() {
       const timestamp = new Date().toISOString().replace(/[-:]/g, "").split(".")[0] + "Z";
 
       let ics = "BEGIN:VCALENDAR\r\n";
       ics += "VERSION:2.0\r\n";
       ics += "PRODID:-//Simple ICS Generator//EN\r\n";
+      ics += "PRODID:-//UTSC Course ICS Generator//EN\r\n";
       ics += "CALSCALE:GREGORIAN\r\n";
+      ics += `X-WR-CALNAME:${escapeICS(courseCalendar.courseCode + " Course Calendar")}\r\n`;
+
+      courseCalendar.events
+        .slice()
+        .sort((a, b) => a.date.localeCompare(b.date) || a.assessmentName.localeCompare(b.assessmentName))
+        .forEach(event => {
+          const title = `${event.courseCode} - ${event.assessmentName}`;
+          ics += "BEGIN:VEVENT\r\n";
+          ics += `UID:${generateUID()}\r\n`;
+          ics += `DTSTAMP:${timestamp}\r\n`;
+
+          if (event.allDay) {
+            ics += `DTSTART;VALUE=DATE:${formatICSDate(event.date)}\r\n`;
+            ics += `DTEND;VALUE=DATE:${formatICSDate(getNextDate(event.date))}\r\n`;
+          } else {
+            ics += `DTSTART:${formatICSDateTime(event.date, event.startTime)}\r\n`;
+            ics += `DTEND:${formatICSDateTime(event.date, event.endTime)}\r\n`;
+          }
 
       dates.forEach(date => {
         const title = `${projectName} - ${note}`;
@@ -809,14 +1249,30 @@
 
         ics += "END:VEVENT\r\n";
       });
+          ics += `SUMMARY:${escapeICS(title)}\r\n`;
+          ics += `DESCRIPTION:${escapeICS(event.description)}\r\n`;
+          if (event.location) ics += `LOCATION:${escapeICS(event.location)}\r\n`;
+          if (event.link) ics += `URL:${escapeICS(event.link)}\r\n`;
+          ics += "END:VEVENT\r\n";
+        });
 
       ics += "END:VCALENDAR\r\n";
+      return ics;
+    }
+
+    function downloadCourseCalendar() {
+      if (courseCalendar.events.length === 0) {
+        alert("请先至少添加一个项目到课程日历。 ");
+        return;
+      }
 
       const blob = new Blob([ics], { type: "text/calendar;charset=utf-8" });
+      const blob = new Blob([buildICS()], { type: "text/calendar;charset=utf-8" });
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
       a.href = url;
       a.download = `${projectName}_${note}.ics`.replace(/\s+/g, "_");
+      a.download = `${courseCalendar.courseCode}_course_calendar.ics`;
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
@@ -824,6 +1280,11 @@
     }
 
     addMonthBlock(2026, "any");
+    renderAcademicDates();
+    renderWeekdayPicker();
+    syncSessionHelp();
+    toggleTimeInputs();
+    renderCalendarSummary();
   </script>
 </body>
 </html>
