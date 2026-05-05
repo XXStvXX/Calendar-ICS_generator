@@ -5,57 +5,300 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>ICS Calendar Generator</title>
   <style>
-    * { box-sizing: border-box; font-family: Arial, Helvetica, sans-serif; }
-    body { background: #f5f5f5; margin: 0; padding: 40px; color: #111; }
-    .container { max-width: 940px; margin: auto; background: white; padding: 28px; border-radius: 14px; box-shadow: 0 4px 18px rgba(0,0,0,0.08); }
-    h1 { margin: 0 0 10px; font-size: 28px; font-weight: 700; }
-    .hint { color: #666; font-size: 14px; line-height: 1.6; margin: 0 0 22px; }
-    label { display: block; margin-top: 18px; font-size: 15px; font-weight: 700; }
-    input, select, textarea { width: 100%; padding: 12px; margin-top: 8px; border: 1px solid #ccc; border-radius: 8px; font-size: 15px; background: #fff; }
-    textarea { min-height: 130px; resize: vertical; line-height: 1.5; }
-    .row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
-    .three-col { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; margin-top: 10px; }
-    .checkbox-row { display: flex; align-items: center; gap: 10px; margin-top: 18px; }
-    .checkbox-row input { width: auto; margin: 0; }
-    .checkbox-row label { margin: 0; font-size: 15px; font-weight: 700; cursor: pointer; }
-    .mode-tabs { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 22px; }
-    .mode-button { padding: 13px; border: 1px solid #ccc; border-radius: 10px; background: #fff; color: #111; font-size: 15px; font-weight: 700; cursor: pointer; }
-    .mode-button.active { background: #111; color: #fff; border-color: #111; }
-    .mode-panel { display: none; margin-top: 18px; }
-    .mode-panel.active { display: block; }
-    .format-box { margin-top: 18px; padding: 16px; border: 1px solid #ddd; border-radius: 12px; background: #fafafa; }
-    .format-title { font-size: 16px; font-weight: 700; margin-bottom: 4px; }
-    .format-note { font-size: 13px; color: #666; line-height: 1.5; margin: 0; }
-    .month-block { margin-top: 20px; padding: 18px; border: 1px solid #ddd; border-radius: 12px; background: #fafafa; }
-    .month-header { display: flex; gap: 12px; align-items: end; }
-    .month-header > div { flex: 1; }
-    .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 8px; margin-top: 14px; }
-    .weekday-button, .day-button, .blank-day { min-height: 42px; border-radius: 8px; font-size: 14px; font-weight: 700; }
-    .weekday-button { border: 1px solid #bbb; background: #eee; color: #111; cursor: pointer; }
-    .weekday-button:hover { background: #ddd; }
-    .weekday-button.active { background: #111; color: #fff; border-color: #111; }
-    .day-button { border: 1px solid #ccc; background: white; color: #111; cursor: pointer; }
-    .day-button.selected { background: #111; color: white; border-color: #111; }
-    .blank-day { border: 1px dashed #e0e0e0; background: #f7f7f7; }
-    .small-button { width: auto; padding: 11px 14px; margin-top: 8px; border: none; border-radius: 8px; background: #eee; color: #111; font-size: 14px; font-weight: 700; cursor: pointer; }
-    .small-button:hover { background: #ddd; }
-    .main-button { margin-top: 24px; width: 100%; padding: 14px; border: none; border-radius: 10px; background: #111; color: white; font-size: 16px; font-weight: 700; cursor: pointer; }
-    .main-button:hover { background: #333; }
-    .remove-button { background: #f1f1f1; color: #333; }
-    .section-title { margin-top: 26px; font-size: 18px; font-weight: 700; }
+    * {
+      box-sizing: border-box;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    body {
+      background: #f5f5f5;
+      margin: 0;
+      padding: 40px;
+      color: #111;
+    }
+
+    .container {
+      max-width: 940px;
+      margin: auto;
+      background: #fff;
+      padding: 28px;
+      border-radius: 14px;
+      box-shadow: 0 4px 18px rgba(0, 0, 0, 0.08);
+    }
+
+    h1 {
+      margin: 0 0 10px;
+      font-size: 28px;
+      font-weight: 700;
+    }
+
+    .hint {
+      color: #666;
+      font-size: 14px;
+      line-height: 1.6;
+      margin: 0 0 22px;
+    }
+
+    label {
+      display: block;
+      margin-top: 18px;
+      font-size: 15px;
+      font-weight: 700;
+    }
+
+    input,
+    select,
+    textarea {
+      width: 100%;
+      padding: 12px;
+      margin-top: 8px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      font-size: 15px;
+      background: #fff;
+    }
+
+    textarea {
+      min-height: 130px;
+      resize: vertical;
+      line-height: 1.5;
+    }
+
+    .row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    .three-col {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 12px;
+      margin-top: 10px;
+    }
+
+    .checkbox-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-top: 18px;
+    }
+
+    .checkbox-row input {
+      width: auto;
+      margin: 0;
+    }
+
+    .checkbox-row label {
+      margin: 0;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .mode-tabs {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-top: 22px;
+    }
+
+    .mode-button {
+      padding: 13px;
+      border: 1px solid #ccc;
+      border-radius: 10px;
+      background: #fff;
+      color: #111;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .mode-button.active {
+      background: #111;
+      color: #fff;
+      border-color: #111;
+    }
+
+    .mode-panel {
+      display: none;
+      margin-top: 18px;
+    }
+
+    .mode-panel.active {
+      display: block;
+    }
+
+    .format-box {
+      margin-top: 18px;
+      padding: 16px;
+      border: 1px solid #ddd;
+      border-radius: 12px;
+      background: #fafafa;
+    }
+
+    .format-title {
+      font-size: 16px;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+
+    .format-note {
+      font-size: 13px;
+      color: #666;
+      line-height: 1.5;
+      margin: 0;
+    }
+
+    .month-block {
+      margin-top: 20px;
+      padding: 18px;
+      border: 1px solid #ddd;
+      border-radius: 12px;
+      background: #fafafa;
+    }
+
+    .month-header {
+      display: flex;
+      gap: 12px;
+      align-items: end;
+    }
+
+    .month-header > div {
+      flex: 1;
+    }
+
+    .calendar-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 8px;
+      margin-top: 14px;
+    }
+
+    .weekday-button,
+    .day-button,
+    .blank-day {
+      min-height: 42px;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    .weekday-button {
+      border: 1px solid #bbb;
+      background: #eee;
+      color: #111;
+      cursor: pointer;
+    }
+
+    .weekday-button:hover {
+      background: #ddd;
+    }
+
+    .weekday-button.active {
+      background: #111;
+      color: #fff;
+      border-color: #111;
+    }
+
+    .day-button {
+      border: 1px solid #ccc;
+      background: #fff;
+      color: #111;
+      cursor: pointer;
+    }
+
+    .day-button.selected {
+      background: #111;
+      color: #fff;
+      border-color: #111;
+    }
+
+    .blank-day {
+      border: 1px dashed #e0e0e0;
+      background: #f7f7f7;
+    }
+
+    .small-button {
+      width: auto;
+      padding: 11px 14px;
+      margin-top: 8px;
+      border: none;
+      border-radius: 8px;
+      background: #eee;
+      color: #111;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .small-button:hover {
+      background: #ddd;
+    }
+
+    .main-button {
+      margin-top: 24px;
+      width: 100%;
+      padding: 14px;
+      border: none;
+      border-radius: 10px;
+      background: #111;
+      color: #fff;
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .main-button:hover {
+      background: #333;
+    }
+
+    .remove-button {
+      background: #f1f1f1;
+      color: #333;
+    }
+
+    .section-title {
+      margin-top: 26px;
+      font-size: 18px;
+      font-weight: 700;
+    }
+
     @media (max-width: 700px) {
-      body { padding: 20px; }
-      .row, .three-col, .mode-tabs { grid-template-columns: 1fr; }
-      .month-header { flex-direction: column; align-items: stretch; }
-      .calendar-grid { gap: 5px; }
-      .weekday-button, .day-button, .blank-day { min-height: 36px; font-size: 12px; }
+      body {
+        padding: 20px;
+      }
+
+      .row,
+      .three-col,
+      .mode-tabs {
+        grid-template-columns: 1fr;
+      }
+
+      .month-header {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .calendar-grid {
+        gap: 5px;
+      }
+
+      .weekday-button,
+      .day-button,
+      .blank-day {
+        min-height: 36px;
+        font-size: 12px;
+      }
     }
   </style>
 </head>
 <body>
   <div class="container">
     <h1>Calendar ICS Generator</h1>
-    <p class="hint">选择一种日期输入模式：粘贴日期文本，或者按月份手动多选日期。两个模式互斥，生成时只会读取当前模式。</p>
+    <p class="hint">
+      选择一种日期输入模式：粘贴日期文本，或者按月份手动多选日期。两个模式互斥，生成时只会读取当前模式。
+    </p>
 
     <label for="projectName">项目名称</label>
     <input id="projectName" placeholder="例如：LINB06" value="LINB06" />
@@ -91,7 +334,9 @@
     <div id="pastePanel" class="mode-panel active">
       <div class="format-box">
         <div class="format-title">粘贴日期顺序</div>
-        <p class="format-note">请选择你粘贴日期的真实顺序。支持数字月份，也支持英文月份，例如 March、Mar、April、Apr。分隔符可以是 - / _ . 空格 或逗号。</p>
+        <p class="format-note">
+          请选择你粘贴日期的真实顺序。支持数字月份，也支持英文月份，例如 March、Mar、April、Apr。分隔符可以是 - / _ . 空格 或逗号。
+        </p>
         <div class="three-col">
           <div>
             <label for="part1">第 1 位</label>
@@ -146,26 +391,53 @@
     let monthBlockId = 0;
 
     const selectedDates = new Set();
+    const manualDates = new Set();
     const weekdayRules = new Map();
 
-    const monthNames = ["一月", "二月", "三月", "四月", "五月", "六月", "七月", "八月", "九月", "十月", "十一月", "十二月"];
+    const monthNames = [
+      "一月", "二月", "三月", "四月", "五月", "六月",
+      "七月", "八月", "九月", "十月", "十一月", "十二月"
+    ];
+
     const weekdayNames = ["周日", "周一", "周二", "周三", "周四", "周五", "周六"];
+
     const monthMap = {
-      jan: 1, january: 1, feb: 2, february: 2, mar: 3, march: 3,
-      apr: 4, april: 4, may: 5, jun: 6, june: 6, jul: 7, july: 7,
-      aug: 8, august: 8, sep: 9, sept: 9, september: 9,
-      oct: 10, october: 10, nov: 11, november: 11, dec: 12, december: 12
+      jan: 1, january: 1,
+      feb: 2, february: 2,
+      mar: 3, march: 3,
+      apr: 4, april: 4,
+      may: 5,
+      jun: 6, june: 6,
+      jul: 7, july: 7,
+      aug: 8, august: 8,
+      sep: 9, sept: 9, september: 9,
+      oct: 10, october: 10,
+      nov: 11, november: 11,
+      dec: 12, december: 12
     };
 
-    function pad(num) { return String(num).padStart(2, "0"); }
-    function daysInMonth(year, month) { return new Date(year, month, 0).getDate(); }
+    function pad(num) {
+      return String(num).padStart(2, "0");
+    }
 
-    function makeDate(year, month, day) { return `${year}-${pad(month)}-${pad(day)}`; }
+    function makeDate(year, month, day) {
+      return `${year}-${pad(month)}-${pad(day)}`;
+    }
+
+    function daysInMonth(year, month) {
+      return new Date(year, month, 0).getDate();
+    }
 
     function isValidDateParts(year, month, day) {
-      return Number.isInteger(year) && Number.isInteger(month) && Number.isInteger(day) &&
-        year >= 1900 && year <= 2100 && month >= 1 && month <= 12 &&
-        day >= 1 && day <= daysInMonth(year, month);
+      return Number.isInteger(year) &&
+        Number.isInteger(month) &&
+        Number.isInteger(day) &&
+        year >= 1900 &&
+        year <= 2100 &&
+        month >= 1 &&
+        month <= 12 &&
+        day >= 1 &&
+        day <= daysInMonth(year, month);
     }
 
     function formatDate(dateStr) {
@@ -186,17 +458,25 @@
     }
 
     function escapeICS(text) {
-      return text.replace(/\\/g, "\\\\").replace(/,/g, "\\,").replace(/;/g, "\\;").replace(/\n/g, "\\n");
+      return text
+        .replace(/\\/g, "\\\\")
+        .replace(/,/g, "\\,")
+        .replace(/;/g, "\\;")
+        .replace(/\n/g, "\\n");
     }
 
-    function generateUID() { return Math.random().toString(36).substring(2) + "@ics-generator"; }
+    function generateUID() {
+      return Math.random().toString(36).substring(2) + "@ics-generator";
+    }
 
     function toggleTimeInputs() {
-      document.getElementById("timeRow").style.display = document.getElementById("allDay").checked ? "none" : "grid";
+      const allDay = document.getElementById("allDay").checked;
+      document.getElementById("timeRow").style.display = allDay ? "none" : "grid";
     }
 
     function setMode(mode) {
       currentMode = mode;
+
       document.getElementById("pasteModeButton").classList.toggle("active", mode === "paste");
       document.getElementById("selectModeButton").classList.toggle("active", mode === "select");
       document.getElementById("pastePanel").classList.toggle("active", mode === "paste");
@@ -204,7 +484,11 @@
     }
 
     function getDateOrder() {
-      return [document.getElementById("part1").value, document.getElementById("part2").value, document.getElementById("part3").value];
+      return [
+        document.getElementById("part1").value,
+        document.getElementById("part2").value,
+        document.getElementById("part3").value
+      ];
     }
 
     function validateDateOrder() {
@@ -215,24 +499,45 @@
 
     function parseDateToken(token, type) {
       const cleaned = token.trim().toLowerCase();
-      if (type === "month" && monthMap[cleaned]) return monthMap[cleaned];
-      if (/^\d+$/.test(cleaned)) return Number(cleaned);
+
+      if (type === "month" && monthMap[cleaned]) {
+        return monthMap[cleaned];
+      }
+
+      if (/^\d+$/.test(cleaned)) {
+        return Number(cleaned);
+      }
+
       return null;
     }
 
     function splitDateLine(line) {
-      return line.trim().replace(/,/g, " ").split(/[^a-zA-Z0-9]+/).map(part => part.trim()).filter(Boolean);
+      return line
+        .trim()
+        .replace(/,/g, " ")
+        .split(/[^a-zA-Z0-9]+/)
+        .map(part => part.trim())
+        .filter(Boolean);
     }
 
     function parseFlexibleDate(line) {
       const parts = splitDateLine(line);
       const order = getDateOrder();
-      if (parts.length !== 3 || !validateDateOrder()) return null;
+
+      if (parts.length !== 3) return null;
+      if (!validateDateOrder()) return null;
 
       const parsed = {};
-      for (let i = 0; i < 3; i++) parsed[order[i]] = parseDateToken(parts[i], order[i]);
 
-      if (!isValidDateParts(parsed.year, parsed.month, parsed.day)) return null;
+      for (let i = 0; i < 3; i++) {
+        const type = order[i];
+        parsed[type] = parseDateToken(parts[i], type);
+      }
+
+      if (!isValidDateParts(parsed.year, parsed.month, parsed.day)) {
+        return null;
+      }
+
       return makeDate(parsed.year, parsed.month, parsed.day);
     }
 
@@ -248,11 +553,13 @@
 
     function createMonthOptions(selectedMonth) {
       let options = `<option value="any" ${selectedMonth === "any" ? "selected" : ""}>Any</option>`;
+
       options += monthNames.map((name, index) => {
         const value = index + 1;
         const selected = value === selectedMonth ? "selected" : "";
         return `<option value="${value}" ${selected}>${name}</option>`;
       }).join("");
+
       return options;
     }
 
@@ -260,13 +567,16 @@
       return `${year}-${monthValue}-${weekday}`;
     }
 
-    function getDatesForRule(year, monthValue, weekday) {
+    function getDatesForWeekday(year, monthValue, weekday) {
       const dates = [];
-      const months = monthValue === "any" ? Array.from({ length: 12 }, (_, i) => i + 1) : [Number(monthValue)];
+      const months = monthValue === "any"
+        ? Array.from({ length: 12 }, (_, index) => index + 1)
+        : [Number(monthValue)];
 
       months.forEach(month => {
         for (let day = 1; day <= daysInMonth(year, month); day++) {
-          if (new Date(year, month - 1, day).getDay() === weekday) {
+          const date = new Date(year, month - 1, day);
+          if (date.getDay() === weekday) {
             dates.push(makeDate(year, month, day));
           }
         }
@@ -275,34 +585,59 @@
       return dates;
     }
 
-    function recomputeSelectedDatesFromRules() {
+    function recomputeSelectedDates() {
       selectedDates.clear();
 
+      manualDates.forEach(date => {
+        selectedDates.add(date);
+      });
+
       weekdayRules.forEach(rule => {
-        getDatesForRule(rule.year, rule.monthValue, rule.weekday).forEach(date => selectedDates.add(date));
+        getDatesForWeekday(rule.year, rule.monthValue, rule.weekday).forEach(date => {
+          selectedDates.add(date);
+        });
       });
     }
 
-    function toggleWeekdayRule(year, monthValue, weekday) {
-      const key = getRuleKey(year, monthValue, weekday);
-
-      if (weekdayRules.has(key)) {
-        weekdayRules.delete(key);
-      } else {
-        weekdayRules.set(key, { year, monthValue, weekday });
-      }
-
-      recomputeSelectedDatesFromRules();
-      renderAllCalendars();
-    }
-
-    function isWeekdayButtonActive(year, monthValue, weekday) {
+    function hasDirectRule(year, monthValue, weekday) {
       return weekdayRules.has(getRuleKey(year, monthValue, weekday));
     }
 
+    function hasInheritedAnyRule(year, monthValue, weekday) {
+      return monthValue !== "any" && weekdayRules.has(getRuleKey(year, "any", weekday));
+    }
+
+    function isWeekdayButtonActive(year, monthValue, weekday) {
+      return hasDirectRule(year, monthValue, weekday) || hasInheritedAnyRule(year, monthValue, weekday);
+    }
+
+    function toggleWeekdayRule(year, monthValue, weekday) {
+      const directKey = getRuleKey(year, monthValue, weekday);
+      const inheritedAnyKey = getRuleKey(year, "any", weekday);
+
+      if (weekdayRules.has(directKey)) {
+        weekdayRules.delete(directKey);
+      } else if (monthValue !== "any" && weekdayRules.has(inheritedAnyKey)) {
+        weekdayRules.delete(inheritedAnyKey);
+      } else {
+        weekdayRules.set(directKey, { year, monthValue, weekday });
+      }
+
+      recomputeSelectedDates();
+      renderAllCalendars();
+    }
+
     function toggleSingleDate(dateStr) {
-      if (selectedDates.has(dateStr)) selectedDates.delete(dateStr);
-      else selectedDates.add(dateStr);
+      if (manualDates.has(dateStr)) {
+        manualDates.delete(dateStr);
+      } else if (selectedDates.has(dateStr)) {
+        selectedDates.delete(dateStr);
+        manualDates.delete(dateStr);
+      } else {
+        manualDates.add(dateStr);
+      }
+
+      recomputeSelectedDates();
       renderAllCalendars();
     }
 
@@ -332,18 +667,22 @@
       `;
 
       container.appendChild(block);
+      recomputeSelectedDates();
       renderAllCalendars();
     }
 
     function removeMonthBlock(id) {
       const block = document.querySelector(`[data-block-id="${id}"]`);
-      if (block) block.remove();
+      if (block) {
+        block.remove();
+      }
     }
 
     function renderCalendar(id) {
       const year = Number(document.getElementById(`year-${id}`).value);
       const monthValue = document.getElementById(`month-${id}`).value;
       const grid = document.getElementById(`calendar-${id}`);
+
       grid.innerHTML = "";
 
       weekdayNames.forEach((name, weekday) => {
@@ -352,11 +691,15 @@
         button.className = "weekday-button";
         button.textContent = name;
         button.classList.toggle("active", isWeekdayButtonActive(year, monthValue, weekday));
-        button.onclick = () => toggleWeekdayRule(year, monthValue, weekday);
+        button.onclick = function () {
+          toggleWeekdayRule(year, monthValue, weekday);
+        };
         grid.appendChild(button);
       });
 
-      if (monthValue === "any") return;
+      if (monthValue === "any") {
+        return;
+      }
 
       const month = Number(monthValue);
       const firstWeekday = new Date(year, month - 1, 1).getDay();
@@ -375,22 +718,33 @@
         button.className = "day-button";
         button.textContent = day;
         button.classList.toggle("selected", selectedDates.has(dateStr));
-        button.onclick = () => toggleSingleDate(dateStr);
+        button.onclick = function () {
+          toggleSingleDate(dateStr);
+        };
         grid.appendChild(button);
       }
     }
 
     function renderAllCalendars() {
-      document.querySelectorAll(".month-block").forEach(block => renderCalendar(Number(block.dataset.blockId)));
+      document.querySelectorAll(".month-block").forEach(block => {
+        renderCalendar(Number(block.dataset.blockId));
+      });
     }
 
     function getSelectedDates() {
+      recomputeSelectedDates();
       return Array.from(selectedDates).sort();
     }
 
     function getDatesByCurrentMode() {
-      if (currentMode === "paste") return cleanDates(document.getElementById("datesText").value);
-      if (currentMode === "select") return getSelectedDates();
+      if (currentMode === "paste") {
+        return cleanDates(document.getElementById("datesText").value);
+      }
+
+      if (currentMode === "select") {
+        return getSelectedDates();
+      }
+
       return [];
     }
 
@@ -409,26 +763,50 @@
 
       const dates = [...new Set(getDatesByCurrentMode())].sort();
 
-      if (!projectName || !note) { alert("请填写项目名称和备注。"); return; }
-      if (dates.length === 0) { alert("当前模式下没有有效日期。请检查日期顺序和日期内容。"); return; }
-      if (!allDay && (!startTime || !endTime)) { alert("请填写开始时间和结束时间，或勾选全天事件。"); return; }
+      if (!projectName || !note) {
+        alert("请填写项目名称和备注。");
+        return;
+      }
+
+      if (dates.length === 0) {
+        alert("当前模式下没有有效日期。请检查日期顺序和日期内容。");
+        return;
+      }
+
+      if (!allDay && (!startTime || !endTime)) {
+        alert("请填写开始时间和结束时间，或勾选全天事件。");
+        return;
+      }
 
       const timestamp = new Date().toISOString().replace(/[-:]/g, "").split(".")[0] + "Z";
-      let ics = "BEGIN:VCALENDAR\r\nVERSION:2.0\r\nPRODID:-//Simple ICS Generator//EN\r\nCALSCALE:GREGORIAN\r\n";
+
+      let ics = "BEGIN:VCALENDAR\r\n";
+      ics += "VERSION:2.0\r\n";
+      ics += "PRODID:-//Simple ICS Generator//EN\r\n";
+      ics += "CALSCALE:GREGORIAN\r\n";
 
       dates.forEach(date => {
         const title = `${projectName} - ${note}`;
+
         ics += "BEGIN:VEVENT\r\n";
-        ics += `UID:${generateUID()}\r\nDTSTAMP:${timestamp}\r\n`;
+        ics += `UID:${generateUID()}\r\n`;
+        ics += `DTSTAMP:${timestamp}\r\n`;
 
         if (allDay) {
-          ics += `DTSTART;VALUE=DATE:${formatDate(date)}\r\nDTEND;VALUE=DATE:${formatDate(getNextDate(date))}\r\n`;
+          ics += `DTSTART;VALUE=DATE:${formatDate(date)}\r\n`;
+          ics += `DTEND;VALUE=DATE:${formatDate(getNextDate(date))}\r\n`;
         } else {
-          ics += `DTSTART:${formatDateTime(date, startTime)}\r\nDTEND:${formatDateTime(date, endTime)}\r\n`;
+          ics += `DTSTART:${formatDateTime(date, startTime)}\r\n`;
+          ics += `DTEND:${formatDateTime(date, endTime)}\r\n`;
         }
 
-        ics += `SUMMARY:${escapeICS(title)}\r\nDESCRIPTION:${escapeICS(note)}\r\n`;
-        if (location) ics += `LOCATION:${escapeICS(location)}\r\n`;
+        ics += `SUMMARY:${escapeICS(title)}\r\n`;
+        ics += `DESCRIPTION:${escapeICS(note)}\r\n`;
+
+        if (location) {
+          ics += `LOCATION:${escapeICS(location)}\r\n`;
+        }
+
         ics += "END:VEVENT\r\n";
       });
 
