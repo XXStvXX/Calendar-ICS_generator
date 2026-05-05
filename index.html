@@ -5,317 +5,57 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>ICS Calendar Generator</title>
   <style>
-    * {
-      box-sizing: border-box;
-      font-family: Arial, Helvetica, sans-serif;
-    }
-
-    body {
-      background: #f5f5f5;
-      margin: 0;
-      padding: 40px;
-      color: #111;
-    }
-
-    .container {
-      max-width: 940px;
-      margin: auto;
-      background: white;
-      padding: 28px;
-      border-radius: 14px;
-      box-shadow: 0 4px 18px rgba(0,0,0,0.08);
-    }
-
-    h1 {
-      margin: 0 0 10px;
-      font-size: 28px;
-      font-weight: 700;
-    }
-
-    .hint {
-      color: #666;
-      font-size: 14px;
-      line-height: 1.6;
-      margin: 0 0 22px;
-    }
-
-    label {
-      display: block;
-      margin-top: 18px;
-      font-size: 15px;
-      font-weight: 700;
-    }
-
-    input,
-    select,
-    textarea {
-      width: 100%;
-      padding: 12px;
-      margin-top: 8px;
-      border: 1px solid #ccc;
-      border-radius: 8px;
-      font-size: 15px;
-      background: #fff;
-    }
-
-    textarea {
-      min-height: 130px;
-      resize: vertical;
-      line-height: 1.5;
-    }
-
-    .row {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 16px;
-    }
-
-    .three-col {
-      display: grid;
-      grid-template-columns: 1fr 1fr 1fr;
-      gap: 12px;
-      margin-top: 10px;
-    }
-
-    .checkbox-row {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      margin-top: 18px;
-    }
-
-    .checkbox-row input {
-      width: auto;
-      margin: 0;
-    }
-
-    .checkbox-row label {
-      margin: 0;
-      font-size: 15px;
-      font-weight: 700;
-      cursor: pointer;
-    }
-
-    .mode-tabs {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 10px;
-      margin-top: 22px;
-    }
-
-    .mode-button {
-      padding: 13px;
-      border: 1px solid #ccc;
-      border-radius: 10px;
-      background: #fff;
-      color: #111;
-      font-size: 15px;
-      font-weight: 700;
-      cursor: pointer;
-    }
-
-    .mode-button.active {
-      background: #111;
-      color: #fff;
-      border-color: #111;
-    }
-
-    .mode-panel {
-      display: none;
-      margin-top: 18px;
-    }
-
-    .mode-panel.active {
-      display: block;
-    }
-
-    .format-box {
-      margin-top: 18px;
-      padding: 16px;
-      border: 1px solid #ddd;
-      border-radius: 12px;
-      background: #fafafa;
-    }
-
-    .format-title {
-      font-size: 16px;
-      font-weight: 700;
-      margin-bottom: 4px;
-    }
-
-    .format-note {
-      font-size: 13px;
-      color: #666;
-      line-height: 1.5;
-      margin: 0;
-    }
-
-    .weekday-row {
-      display: grid;
-      grid-template-columns: repeat(7, 1fr);
-      gap: 8px;
-      margin-top: 14px;
-    }
-
-    .weekday-button {
-      padding: 10px 0;
-      border: 1px solid #bbb;
-      border-radius: 8px;
-      background: #eee;
-      color: #111;
-      font-size: 13px;
-      font-weight: 700;
-      cursor: pointer;
-    }
-
-    .weekday-button:hover {
-      background: #ddd;
-    }
-
-    .weekday-button.selected {
-      background: #111;
-      color: #fff;
-      border-color: #111;
-    }
-
-    .month-block {
-      margin-top: 20px;
-      padding: 18px;
-      border: 1px solid #ddd;
-      border-radius: 12px;
-      background: #fafafa;
-    }
-
-    .month-header {
-      display: flex;
-      gap: 12px;
-      align-items: end;
-    }
-
-    .month-header > div {
-      flex: 1;
-    }
-
-    .calendar-grid {
-      display: grid;
-      grid-template-columns: repeat(7, 1fr);
-      gap: 8px;
-      margin-top: 8px;
-    }
-
-    .weekday-label {
-      padding: 8px 0;
-      text-align: center;
-      color: #666;
-      font-size: 13px;
-      font-weight: 700;
-    }
-
-    .day-button,
-    .blank-day {
-      min-height: 42px;
-      border-radius: 8px;
-      font-size: 14px;
-      font-weight: 700;
-    }
-
-    .day-button {
-      border: 1px solid #ccc;
-      background: white;
-      color: #111;
-      cursor: pointer;
-    }
-
-    .day-button.selected {
-      background: #111;
-      color: white;
-      border-color: #111;
-    }
-
-    .blank-day {
-      border: 1px dashed #e0e0e0;
-      background: #f7f7f7;
-    }
-
-    .small-button {
-      width: auto;
-      padding: 11px 14px;
-      margin-top: 8px;
-      border: none;
-      border-radius: 8px;
-      background: #eee;
-      color: #111;
-      font-size: 14px;
-      font-weight: 700;
-      cursor: pointer;
-    }
-
-    .small-button:hover {
-      background: #ddd;
-    }
-
-    .main-button {
-      margin-top: 24px;
-      width: 100%;
-      padding: 14px;
-      border: none;
-      border-radius: 10px;
-      background: #111;
-      color: white;
-      font-size: 16px;
-      font-weight: 700;
-      cursor: pointer;
-    }
-
-    .main-button:hover {
-      background: #333;
-    }
-
-    .remove-button {
-      background: #f1f1f1;
-      color: #333;
-    }
-
-    .section-title {
-      margin-top: 26px;
-      font-size: 18px;
-      font-weight: 700;
-    }
-
+    * { box-sizing: border-box; font-family: Arial, Helvetica, sans-serif; }
+    body { background: #f5f5f5; margin: 0; padding: 40px; color: #111; }
+    .container { max-width: 940px; margin: auto; background: white; padding: 28px; border-radius: 14px; box-shadow: 0 4px 18px rgba(0,0,0,0.08); }
+    h1 { margin: 0 0 10px; font-size: 28px; font-weight: 700; }
+    .hint { color: #666; font-size: 14px; line-height: 1.6; margin: 0 0 22px; }
+    label { display: block; margin-top: 18px; font-size: 15px; font-weight: 700; }
+    input, select, textarea { width: 100%; padding: 12px; margin-top: 8px; border: 1px solid #ccc; border-radius: 8px; font-size: 15px; background: #fff; }
+    textarea { min-height: 130px; resize: vertical; line-height: 1.5; }
+    .row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .three-col { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; margin-top: 10px; }
+    .checkbox-row { display: flex; align-items: center; gap: 10px; margin-top: 18px; }
+    .checkbox-row input { width: auto; margin: 0; }
+    .checkbox-row label { margin: 0; font-size: 15px; font-weight: 700; cursor: pointer; }
+    .mode-tabs { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 22px; }
+    .mode-button { padding: 13px; border: 1px solid #ccc; border-radius: 10px; background: #fff; color: #111; font-size: 15px; font-weight: 700; cursor: pointer; }
+    .mode-button.active { background: #111; color: #fff; border-color: #111; }
+    .mode-panel { display: none; margin-top: 18px; }
+    .mode-panel.active { display: block; }
+    .format-box { margin-top: 18px; padding: 16px; border: 1px solid #ddd; border-radius: 12px; background: #fafafa; }
+    .format-title { font-size: 16px; font-weight: 700; margin-bottom: 4px; }
+    .format-note { font-size: 13px; color: #666; line-height: 1.5; margin: 0; }
+    .month-block { margin-top: 20px; padding: 18px; border: 1px solid #ddd; border-radius: 12px; background: #fafafa; }
+    .month-header { display: flex; gap: 12px; align-items: end; }
+    .month-header > div { flex: 1; }
+    .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 8px; margin-top: 14px; }
+    .weekday-button, .day-button, .blank-day { min-height: 42px; border-radius: 8px; font-size: 14px; font-weight: 700; }
+    .weekday-button { border: 1px solid #bbb; background: #eee; color: #111; cursor: pointer; }
+    .weekday-button:hover { background: #ddd; }
+    .weekday-button.active { background: #111; color: #fff; border-color: #111; }
+    .day-button { border: 1px solid #ccc; background: white; color: #111; cursor: pointer; }
+    .day-button.selected { background: #111; color: white; border-color: #111; }
+    .blank-day { border: 1px dashed #e0e0e0; background: #f7f7f7; }
+    .small-button { width: auto; padding: 11px 14px; margin-top: 8px; border: none; border-radius: 8px; background: #eee; color: #111; font-size: 14px; font-weight: 700; cursor: pointer; }
+    .small-button:hover { background: #ddd; }
+    .main-button { margin-top: 24px; width: 100%; padding: 14px; border: none; border-radius: 10px; background: #111; color: white; font-size: 16px; font-weight: 700; cursor: pointer; }
+    .main-button:hover { background: #333; }
+    .remove-button { background: #f1f1f1; color: #333; }
+    .section-title { margin-top: 26px; font-size: 18px; font-weight: 700; }
     @media (max-width: 700px) {
-      body {
-        padding: 20px;
-      }
-
-      .row,
-      .three-col,
-      .mode-tabs {
-        grid-template-columns: 1fr;
-      }
-
-      .month-header {
-        flex-direction: column;
-        align-items: stretch;
-      }
-
-      .calendar-grid,
-      .weekday-row {
-        gap: 5px;
-      }
-
-      .day-button,
-      .blank-day {
-        min-height: 36px;
-      }
+      body { padding: 20px; }
+      .row, .three-col, .mode-tabs { grid-template-columns: 1fr; }
+      .month-header { flex-direction: column; align-items: stretch; }
+      .calendar-grid { gap: 5px; }
+      .weekday-button, .day-button, .blank-day { min-height: 36px; font-size: 12px; }
     }
   </style>
 </head>
 <body>
   <div class="container">
     <h1>Calendar ICS Generator</h1>
-    <p class="hint">
-      选择一种日期输入模式：粘贴日期文本，或者按月份手动多选日期。两个模式互斥，生成时只会读取当前模式。
-    </p>
+    <p class="hint">选择一种日期输入模式：粘贴日期文本，或者按月份手动多选日期。两个模式互斥，生成时只会读取当前模式。</p>
 
     <label for="projectName">项目名称</label>
     <input id="projectName" placeholder="例如：LINB06" value="LINB06" />
@@ -351,9 +91,7 @@
     <div id="pastePanel" class="mode-panel active">
       <div class="format-box">
         <div class="format-title">粘贴日期顺序</div>
-        <p class="format-note">
-          请选择你粘贴日期的真实顺序。支持数字月份，也支持英文月份，例如 March、Mar、April、Apr。分隔符可以是 - / _ . 空格 或逗号。
-        </p>
+        <p class="format-note">请选择你粘贴日期的真实顺序。支持数字月份，也支持英文月份，例如 March、Mar、April、Apr。分隔符可以是 - / _ . 空格 或逗号。</p>
         <div class="three-col">
           <div>
             <label for="part1">第 1 位</label>
@@ -406,45 +144,28 @@
   <script>
     let currentMode = "paste";
     let monthBlockId = 0;
-    let extraSelectedDates = new Set();
-    let weekdaySelections = {};
 
-    const monthNames = [
-      "一月", "二月", "三月", "四月", "五月", "六月",
-      "七月", "八月", "九月", "十月", "十一月", "十二月"
-    ];
+    const selectedDates = new Set();
+    const weekdayRules = new Map();
 
+    const monthNames = ["一月", "二月", "三月", "四月", "五月", "六月", "七月", "八月", "九月", "十月", "十一月", "十二月"];
     const weekdayNames = ["周日", "周一", "周二", "周三", "周四", "周五", "周六"];
-
     const monthMap = {
-      jan: 1, january: 1,
-      feb: 2, february: 2,
-      mar: 3, march: 3,
-      apr: 4, april: 4,
-      may: 5,
-      jun: 6, june: 6,
-      jul: 7, july: 7,
-      aug: 8, august: 8,
-      sep: 9, sept: 9, september: 9,
-      oct: 10, october: 10,
-      nov: 11, november: 11,
-      dec: 12, december: 12
+      jan: 1, january: 1, feb: 2, february: 2, mar: 3, march: 3,
+      apr: 4, april: 4, may: 5, jun: 6, june: 6, jul: 7, july: 7,
+      aug: 8, august: 8, sep: 9, sept: 9, september: 9,
+      oct: 10, october: 10, nov: 11, november: 11, dec: 12, december: 12
     };
 
-    function pad(num) {
-      return String(num).padStart(2, "0");
-    }
+    function pad(num) { return String(num).padStart(2, "0"); }
+    function daysInMonth(year, month) { return new Date(year, month, 0).getDate(); }
 
-    function daysInMonth(year, month) {
-      return new Date(year, month, 0).getDate();
-    }
+    function makeDate(year, month, day) { return `${year}-${pad(month)}-${pad(day)}`; }
 
     function isValidDateParts(year, month, day) {
-      if (!Number.isInteger(year) || !Number.isInteger(month) || !Number.isInteger(day)) return false;
-      if (year < 1900 || year > 2100) return false;
-      if (month < 1 || month > 12) return false;
-      if (day < 1 || day > daysInMonth(year, month)) return false;
-      return true;
+      return Number.isInteger(year) && Number.isInteger(month) && Number.isInteger(day) &&
+        year >= 1900 && year <= 2100 && month >= 1 && month <= 12 &&
+        day >= 1 && day <= daysInMonth(year, month);
     }
 
     function formatDate(dateStr) {
@@ -461,42 +182,29 @@
     function getNextDate(dateStr) {
       const date = new Date(dateStr + "T00:00:00");
       date.setDate(date.getDate() + 1);
-      return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}`;
+      return makeDate(date.getFullYear(), date.getMonth() + 1, date.getDate());
     }
 
     function escapeICS(text) {
-      return text
-        .replace(/\\/g, "\\\\")
-        .replace(/,/g, "\\,")
-        .replace(/;/g, "\\;")
-        .replace(/\n/g, "\\n");
+      return text.replace(/\\/g, "\\\\").replace(/,/g, "\\,").replace(/;/g, "\\;").replace(/\n/g, "\\n");
     }
 
-    function generateUID() {
-      return Math.random().toString(36).substring(2) + "@ics-generator";
-    }
+    function generateUID() { return Math.random().toString(36).substring(2) + "@ics-generator"; }
 
     function toggleTimeInputs() {
-      const allDay = document.getElementById("allDay").checked;
-      document.getElementById("timeRow").style.display = allDay ? "none" : "grid";
+      document.getElementById("timeRow").style.display = document.getElementById("allDay").checked ? "none" : "grid";
     }
 
     function setMode(mode) {
       currentMode = mode;
-
       document.getElementById("pasteModeButton").classList.toggle("active", mode === "paste");
       document.getElementById("selectModeButton").classList.toggle("active", mode === "select");
-
       document.getElementById("pastePanel").classList.toggle("active", mode === "paste");
       document.getElementById("selectPanel").classList.toggle("active", mode === "select");
     }
 
     function getDateOrder() {
-      return [
-        document.getElementById("part1").value,
-        document.getElementById("part2").value,
-        document.getElementById("part3").value
-      ];
+      return [document.getElementById("part1").value, document.getElementById("part2").value, document.getElementById("part3").value];
     }
 
     function validateDateOrder() {
@@ -507,48 +215,25 @@
 
     function parseDateToken(token, type) {
       const cleaned = token.trim().toLowerCase();
-
-      if (type === "month" && monthMap[cleaned]) {
-        return monthMap[cleaned];
-      }
-
-      if (/^\d+$/.test(cleaned)) {
-        return Number(cleaned);
-      }
-
+      if (type === "month" && monthMap[cleaned]) return monthMap[cleaned];
+      if (/^\d+$/.test(cleaned)) return Number(cleaned);
       return null;
     }
 
     function splitDateLine(line) {
-      return line
-        .trim()
-        .replace(/,/g, " ")
-        .split(/[^a-zA-Z0-9]+/)
-        .map(part => part.trim())
-        .filter(Boolean);
+      return line.trim().replace(/,/g, " ").split(/[^a-zA-Z0-9]+/).map(part => part.trim()).filter(Boolean);
     }
 
     function parseFlexibleDate(line) {
       const parts = splitDateLine(line);
       const order = getDateOrder();
-
-      if (parts.length !== 3) return null;
-      if (!validateDateOrder()) return null;
+      if (parts.length !== 3 || !validateDateOrder()) return null;
 
       const parsed = {};
+      for (let i = 0; i < 3; i++) parsed[order[i]] = parseDateToken(parts[i], order[i]);
 
-      for (let i = 0; i < 3; i++) {
-        const type = order[i];
-        parsed[type] = parseDateToken(parts[i], type);
-      }
-
-      const year = parsed.year;
-      const month = parsed.month;
-      const day = parsed.day;
-
-      if (!isValidDateParts(year, month, day)) return null;
-
-      return `${year}-${pad(month)}-${pad(day)}`;
+      if (!isValidDateParts(parsed.year, parsed.month, parsed.day)) return null;
+      return makeDate(parsed.year, parsed.month, parsed.day);
     }
 
     function cleanDates(rawText) {
@@ -571,149 +256,111 @@
       return options;
     }
 
-    function getBlockKey(id) {
-      const year = document.getElementById(`year-${id}`).value;
-      const month = document.getElementById(`month-${id}`).value;
-      return `${id}-${year}-${month}`;
+    function getRuleKey(year, monthValue, weekday) {
+      return `${year}-${monthValue}-${weekday}`;
     }
 
-    function getWeekdaySetForBlock(id) {
-      const key = getBlockKey(id);
-      if (!weekdaySelections[key]) {
-        weekdaySelections[key] = new Set();
+    function getDatesForRule(year, monthValue, weekday) {
+      const dates = [];
+      const months = monthValue === "any" ? Array.from({ length: 12 }, (_, i) => i + 1) : [Number(monthValue)];
+
+      months.forEach(month => {
+        for (let day = 1; day <= daysInMonth(year, month); day++) {
+          if (new Date(year, month - 1, day).getDay() === weekday) {
+            dates.push(makeDate(year, month, day));
+          }
+        }
+      });
+
+      return dates;
+    }
+
+    function recomputeSelectedDatesFromRules() {
+      selectedDates.clear();
+
+      weekdayRules.forEach(rule => {
+        getDatesForRule(rule.year, rule.monthValue, rule.weekday).forEach(date => selectedDates.add(date));
+      });
+    }
+
+    function toggleWeekdayRule(year, monthValue, weekday) {
+      const key = getRuleKey(year, monthValue, weekday);
+
+      if (weekdayRules.has(key)) {
+        weekdayRules.delete(key);
+      } else {
+        weekdayRules.set(key, { year, monthValue, weekday });
       }
-      return weekdaySelections[key];
+
+      recomputeSelectedDatesFromRules();
+      renderAllCalendars();
     }
 
-    function addMonthBlock(defaultYear = 2026, defaultMonth = 5) {
+    function isWeekdayButtonActive(year, monthValue, weekday) {
+      return weekdayRules.has(getRuleKey(year, monthValue, weekday));
+    }
+
+    function toggleSingleDate(dateStr) {
+      if (selectedDates.has(dateStr)) selectedDates.delete(dateStr);
+      else selectedDates.add(dateStr);
+      renderAllCalendars();
+    }
+
+    function addMonthBlock(defaultYear = 2026, defaultMonth = "any") {
       monthBlockId++;
       const id = monthBlockId;
       const container = document.getElementById("monthContainer");
-
       const block = document.createElement("div");
+
       block.className = "month-block";
       block.dataset.blockId = id;
       block.innerHTML = `
         <div class="month-header">
           <div>
             <label for="year-${id}">年份</label>
-            <input id="year-${id}" type="number" value="${defaultYear}" onchange="renderCalendar(${id})" />
+            <input id="year-${id}" type="number" value="${defaultYear}" onchange="renderAllCalendars()" />
           </div>
           <div>
             <label for="month-${id}">月份</label>
-            <select id="month-${id}" onchange="renderCalendar(${id})">
+            <select id="month-${id}" onchange="renderAllCalendars()">
               ${createMonthOptions(defaultMonth)}
             </select>
           </div>
           <button type="button" class="small-button remove-button" onclick="removeMonthBlock(${id})">删除</button>
         </div>
-        <div class="weekday-row" id="weekday-row-${id}">
-          <button type="button" class="weekday-button" data-weekday-button="0" onclick="toggleWeekdayForBlock(${id}, 0)">周日</button>
-          <button type="button" class="weekday-button" data-weekday-button="1" onclick="toggleWeekdayForBlock(${id}, 1)">周一</button>
-          <button type="button" class="weekday-button" data-weekday-button="2" onclick="toggleWeekdayForBlock(${id}, 2)">周二</button>
-          <button type="button" class="weekday-button" data-weekday-button="3" onclick="toggleWeekdayForBlock(${id}, 3)">周三</button>
-          <button type="button" class="weekday-button" data-weekday-button="4" onclick="toggleWeekdayForBlock(${id}, 4)">周四</button>
-          <button type="button" class="weekday-button" data-weekday-button="5" onclick="toggleWeekdayForBlock(${id}, 5)">周五</button>
-          <button type="button" class="weekday-button" data-weekday-button="6" onclick="toggleWeekdayForBlock(${id}, 6)">周六</button>
-        </div>
         <div class="calendar-grid" id="calendar-${id}"></div>
       `;
 
       container.appendChild(block);
-      renderCalendar(id);
+      renderAllCalendars();
     }
 
     function removeMonthBlock(id) {
       const block = document.querySelector(`[data-block-id="${id}"]`);
-      if (block) {
-        block.remove();
-      }
-    }
-
-    function getDatesForWeekdayInMonth(year, month, weekday) {
-      const dates = [];
-      const totalDays = daysInMonth(year, month);
-      for (let day = 1; day <= totalDays; day++) {
-        const date = new Date(year, month - 1, day);
-        if (date.getDay() === weekday) {
-          dates.push(`${year}-${pad(month)}-${pad(day)}`);
-        }
-      }
-      return dates;
-    }
-
-    function getDatesForWeekdayInYear(year, weekday) {
-      const dates = [];
-      for (let month = 1; month <= 12; month++) {
-        dates.push(...getDatesForWeekdayInMonth(year, month, weekday));
-      }
-      return dates;
-    }
-
-    function addDatesForWeekday(id, weekday) {
-      const year = Number(document.getElementById(`year-${id}`).value);
-      const monthValue = document.getElementById(`month-${id}`).value;
-      const dates = monthValue === "any"
-        ? getDatesForWeekdayInYear(year, weekday)
-        : getDatesForWeekdayInMonth(year, Number(monthValue), weekday);
-
-      dates.forEach(date => extraSelectedDates.add(date));
-    }
-
-    function removeDatesForWeekday(id, weekday) {
-      const year = Number(document.getElementById(`year-${id}`).value);
-      const monthValue = document.getElementById(`month-${id}`).value;
-      const dates = monthValue === "any"
-        ? getDatesForWeekdayInYear(year, weekday)
-        : getDatesForWeekdayInMonth(year, Number(monthValue), weekday);
-
-      dates.forEach(date => extraSelectedDates.delete(date));
-    }
-
-    function toggleWeekdayForBlock(id, weekday) {
-      const selectedWeekdays = getWeekdaySetForBlock(id);
-
-      if (selectedWeekdays.has(weekday)) {
-        selectedWeekdays.delete(weekday);
-        removeDatesForWeekday(id, weekday);
-      } else {
-        selectedWeekdays.add(weekday);
-        addDatesForWeekday(id, weekday);
-      }
-
-      renderCalendar(id);
-    }
-
-    function renderWeekdayButtons(id) {
-      const selectedWeekdays = getWeekdaySetForBlock(id);
-      document.querySelectorAll(`#weekday-row-${id} .weekday-button`).forEach(button => {
-        const weekday = Number(button.dataset.weekdayButton);
-        button.classList.toggle("selected", selectedWeekdays.has(weekday));
-      });
+      if (block) block.remove();
     }
 
     function renderCalendar(id) {
       const year = Number(document.getElementById(`year-${id}`).value);
       const monthValue = document.getElementById(`month-${id}`).value;
       const grid = document.getElementById(`calendar-${id}`);
-
       grid.innerHTML = "";
-      renderWeekdayButtons(id);
 
-      if (monthValue === "any") {
-        return;
-      }
+      weekdayNames.forEach((name, weekday) => {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = "weekday-button";
+        button.textContent = name;
+        button.classList.toggle("active", isWeekdayButtonActive(year, monthValue, weekday));
+        button.onclick = () => toggleWeekdayRule(year, monthValue, weekday);
+        grid.appendChild(button);
+      });
+
+      if (monthValue === "any") return;
 
       const month = Number(monthValue);
-      const totalDays = daysInMonth(year, month);
       const firstWeekday = new Date(year, month - 1, 1).getDay();
-
-      weekdayNames.forEach(name => {
-        const label = document.createElement("div");
-        label.className = "weekday-label";
-        label.textContent = name;
-        grid.appendChild(label);
-      });
+      const totalDays = daysInMonth(year, month);
 
       for (let i = 0; i < firstWeekday; i++) {
         const blank = document.createElement("div");
@@ -722,47 +369,28 @@
       }
 
       for (let day = 1; day <= totalDays; day++) {
-        const dateStr = `${year}-${pad(month)}-${pad(day)}`;
+        const dateStr = makeDate(year, month, day);
         const button = document.createElement("button");
         button.type = "button";
         button.className = "day-button";
         button.textContent = day;
-        button.dataset.date = dateStr;
-        button.dataset.weekday = String(new Date(year, month - 1, day).getDay());
-
-        if (extraSelectedDates.has(dateStr)) {
-          button.classList.add("selected");
-        }
-
-        button.onclick = function () {
-          button.classList.toggle("selected");
-          if (button.classList.contains("selected")) {
-            extraSelectedDates.add(dateStr);
-          } else {
-            extraSelectedDates.delete(dateStr);
-          }
-        };
-
+        button.classList.toggle("selected", selectedDates.has(dateStr));
+        button.onclick = () => toggleSingleDate(dateStr);
         grid.appendChild(button);
       }
     }
 
+    function renderAllCalendars() {
+      document.querySelectorAll(".month-block").forEach(block => renderCalendar(Number(block.dataset.blockId)));
+    }
+
     function getSelectedDates() {
-      document.querySelectorAll(".day-button.selected").forEach(button => {
-        extraSelectedDates.add(button.dataset.date);
-      });
-      return Array.from(extraSelectedDates).sort();
+      return Array.from(selectedDates).sort();
     }
 
     function getDatesByCurrentMode() {
-      if (currentMode === "paste") {
-        return cleanDates(document.getElementById("datesText").value);
-      }
-
-      if (currentMode === "select") {
-        return getSelectedDates();
-      }
-
+      if (currentMode === "paste") return cleanDates(document.getElementById("datesText").value);
+      if (currentMode === "select") return getSelectedDates();
       return [];
     }
 
@@ -781,51 +409,26 @@
 
       const dates = [...new Set(getDatesByCurrentMode())].sort();
 
-      if (!projectName || !note) {
-        alert("请填写项目名称和备注。");
-        return;
-      }
+      if (!projectName || !note) { alert("请填写项目名称和备注。"); return; }
+      if (dates.length === 0) { alert("当前模式下没有有效日期。请检查日期顺序和日期内容。"); return; }
+      if (!allDay && (!startTime || !endTime)) { alert("请填写开始时间和结束时间，或勾选全天事件。"); return; }
 
-      if (dates.length === 0) {
-        alert("当前模式下没有有效日期。请检查日期顺序和日期内容。");
-        return;
-      }
-
-      if (!allDay && (!startTime || !endTime)) {
-        alert("请填写开始时间和结束时间，或勾选全天事件。");
-        return;
-      }
-
-      const now = new Date();
-      const timestamp = now.toISOString().replace(/[-:]/g, "").split(".")[0] + "Z";
-
-      let ics = "BEGIN:VCALENDAR\r\n";
-      ics += "VERSION:2.0\r\n";
-      ics += "PRODID:-//Simple ICS Generator//EN\r\n";
-      ics += "CALSCALE:GREGORIAN\r\n";
+      const timestamp = new Date().toISOString().replace(/[-:]/g, "").split(".")[0] + "Z";
+      let ics = "BEGIN:VCALENDAR\r\nVERSION:2.0\r\nPRODID:-//Simple ICS Generator//EN\r\nCALSCALE:GREGORIAN\r\n";
 
       dates.forEach(date => {
         const title = `${projectName} - ${note}`;
-
         ics += "BEGIN:VEVENT\r\n";
-        ics += `UID:${generateUID()}\r\n`;
-        ics += `DTSTAMP:${timestamp}\r\n`;
+        ics += `UID:${generateUID()}\r\nDTSTAMP:${timestamp}\r\n`;
 
         if (allDay) {
-          ics += `DTSTART;VALUE=DATE:${formatDate(date)}\r\n`;
-          ics += `DTEND;VALUE=DATE:${formatDate(getNextDate(date))}\r\n`;
+          ics += `DTSTART;VALUE=DATE:${formatDate(date)}\r\nDTEND;VALUE=DATE:${formatDate(getNextDate(date))}\r\n`;
         } else {
-          ics += `DTSTART:${formatDateTime(date, startTime)}\r\n`;
-          ics += `DTEND:${formatDateTime(date, endTime)}\r\n`;
+          ics += `DTSTART:${formatDateTime(date, startTime)}\r\nDTEND:${formatDateTime(date, endTime)}\r\n`;
         }
 
-        ics += `SUMMARY:${escapeICS(title)}\r\n`;
-        ics += `DESCRIPTION:${escapeICS(note)}\r\n`;
-
-        if (location) {
-          ics += `LOCATION:${escapeICS(location)}\r\n`;
-        }
-
+        ics += `SUMMARY:${escapeICS(title)}\r\nDESCRIPTION:${escapeICS(note)}\r\n`;
+        if (location) ics += `LOCATION:${escapeICS(location)}\r\n`;
         ics += "END:VEVENT\r\n";
       });
 
@@ -842,8 +445,7 @@
       URL.revokeObjectURL(url);
     }
 
-    addMonthBlock(2026, 5);
-    addMonthBlock(2026, 6);
+    addMonthBlock(2026, "any");
   </script>
 </body>
 </html>
